@@ -83,7 +83,7 @@ public class Main {
     }
 
     private static void saveExpenses(JsonArray expensesArray) {
-        System.out.println("Saving tasks to " + FILE_NAME);
+        System.out.println("Saving Expense to " + FILE_NAME);
         try (FileWriter file = new FileWriter(FILE_NAME)) {
             file.write(GSON.toJson(expensesArray));
             file.flush();

@@ -27,7 +27,7 @@ public class Main {
         int maxId = 0;
 
         try (FileReader reader = new FileReader(FILE_NAME)) {
-//            JsonParser jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
             expensesArray = (JsonArray) JsonParser.parseReader(reader);
             for (int i = 0; i < expensesArray.size(); i++) {
                 JsonObject item = expensesArray.get(i).getAsJsonObject();
@@ -74,12 +74,11 @@ public class Main {
         return expensesArray;
     }
 
-    private static void displayList(JsonArray newExpenseArray) {
-        if(newExpenseArray.isEmpty()) return;
+    private static void displayList(JsonArray expensesArray) {
+        if(expensesArray.isEmpty()) return;
         System.out.println("ID       DATE           DESCRIPTION     AMOUNT");
-        for (int i = 0; i < newExpenseArray.size(); i++) {
-            System.out.println();
-        }
+        expensesArray.forEach(expense -> System.out.println(
+                expense.getAsJsonObject().get("id") + "   " + expense.getAsJsonObject().get("updatedAt") + expense.getAsJsonObject().get("description") + expense.getAsJsonObject().get("amount")));
     }
 
     private static void saveExpenses(JsonArray expensesArray) {

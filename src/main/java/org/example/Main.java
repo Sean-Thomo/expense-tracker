@@ -3,6 +3,11 @@ package org.example;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -21,13 +26,27 @@ public class Main {
         JsonArray newExpenseArray = new JsonArray();
         int maxId = 0;
 
+        try (FileReader reader = new FileReader(FILE_NAME)) {
+//            JsonParser jsonParser = new JsonParser();
+            expensesArray = (JsonArray) JsonParser.parseReader(reader);
+            for (int i = 0; i < expensesArray.size(); i++) {
+                JsonObject item = expensesArray.get(i).getAsJsonObject();
+                int currentId = item.get("id").getAsInt();
+                if (currentId > maxId) {
+                    maxId = currentId;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("No existing file found, creating a new one.");
+        }
+
         switch (action) {
             case "add":
                 newExpenseArray = addExpense(expensesArray, ++maxId, args);
-                System.out.println("Adding task");
+                saveExpenses(expensesArray);
             case "list":
                 displayList(newExpenseArray);
-                System.out.println("Listing tasks");
+                System.out.println("Listing Expenses:");
             case "summary":
                 System.out.println("Total expenses: ");
             case "delete":
@@ -58,5 +77,19 @@ public class Main {
     private static void displayList(JsonArray newExpenseArray) {
         if(newExpenseArray.isEmpty()) return;
         System.out.println("ID       DATE           DESCRIPTION     AMOUNT");
+        for (int i = 0; i < newExpenseArray.size(); i++) {
+            System.out.println();
+        }
+    }
+
+    private static void saveExpenses(JsonArray expensesArray) {
+        System.out.println("Saving tasks to " + FILE_NAME);
+        try (FileWriter file = new FileWriter(FILE_NAME)) {
+            file.write(GSON.toJson(expensesArray));
+            file.flush();
+            System.out.println("Expense added successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving expense: " + e.getMessage());
+        }
     }
 }

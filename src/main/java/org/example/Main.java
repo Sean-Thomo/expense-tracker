@@ -52,7 +52,7 @@ public class Main {
                 displayList(expensesArray);
                 break;
             case "summary":
-                sumExpense(expensesArray, args.length == 2 ? args[2] == null ? 0 : Integer.parseInt(args[2]) : null);
+                sumExpense(expensesArray, args.length == 3 ? args[2] == null ? 0 : Integer.parseInt(args[2]) : null);
                 break;
             case "delete":
                 System.out.println("Expense deleted successfully");

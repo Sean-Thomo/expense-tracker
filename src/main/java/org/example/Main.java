@@ -55,9 +55,25 @@ public class Main {
                 sumExpense(expensesArray, args.length == 3 ? args[2] == null ? 0 : Integer.parseInt(args[2]) : null);
                 break;
             case "delete":
-                System.out.println("Expense deleted successfully");
+                deleteExpense(expensesArray, args[1], Integer.parseInt(args[2]));
+                saveExpenses(expensesArray);
                 break;
         }
+    }
+
+    private static void deleteExpense(JsonArray expensesArray, String arg, Integer id) {
+        if (Objects.equals(arg, "--id")) {
+            for (int i = 0; i < expensesArray.size(); i++) {
+                JsonObject expense = expensesArray.get(i).getAsJsonObject();
+                if (expense.get("id").getAsInt() == id) {
+                    expensesArray.remove(i);
+                    System.out.println("Expense deleted successfully");
+                }
+            }
+        } else {
+            System.out.println("Please check your arguments");
+        }
+
     }
 
     private static void sumExpense(JsonArray expensesArray, Integer month) {
@@ -117,11 +133,11 @@ public class Main {
     }
 
     private static void saveExpenses(JsonArray expensesArray) {
-        System.out.println("Saving Expense to " + FILE_NAME);
+        System.out.println("Updating Expenses... ");
         try (FileWriter file = new FileWriter(FILE_NAME)) {
             file.write(GSON.toJson(expensesArray));
             file.flush();
-            System.out.println("Expense added successfully.");
+            System.out.println("Expenses updated successfully.");
         } catch (IOException e) {
             System.out.println("Error saving expense: " + e.getMessage());
         }

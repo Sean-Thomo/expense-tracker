@@ -59,10 +59,12 @@ public class Main {
     }
 
     private static void deleteExpense(JsonArray expensesArray, String arg, Integer id) {
+        boolean expenseFound = false;
         if (Objects.equals(arg, "--id")) {
             for (int i = 0; i < expensesArray.size(); i++) {
                 JsonObject expense = expensesArray.get(i).getAsJsonObject();
                 if (expense.get("id").getAsInt() == id) {
+                    expenseFound = true;
                     expensesArray.remove(i);
                     saveExpenses(expensesArray);
                 }
@@ -71,6 +73,9 @@ public class Main {
             System.out.println("Please check your arguments");
         }
 
+        if (!expenseFound) {
+            System.out.println("Expense not found.");
+        }
     }
 
     private static void sumExpense(JsonArray expensesArray, Integer month) {

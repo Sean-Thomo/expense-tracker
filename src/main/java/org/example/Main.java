@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class Main {
     private static final String FILE_NAME = "expenses.json";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final Gson GSON = new Gson();
 
     public static void main(String[] args) {
@@ -27,7 +27,6 @@ public class Main {
         int maxId = 0;
 
         try (FileReader reader = new FileReader(FILE_NAME)) {
-            JsonParser jsonParser = new JsonParser();
             expensesArray = (JsonArray) JsonParser.parseReader(reader);
             for (int i = 0; i < expensesArray.size(); i++) {
                 JsonObject item = expensesArray.get(i).getAsJsonObject();
@@ -42,19 +41,23 @@ public class Main {
 
         switch (action) {
             case "add":
-                newExpenseArray = addExpense(expensesArray, ++maxId, args);
+                addExpense(expensesArray, ++maxId, args);
                 saveExpenses(expensesArray);
+                break;
             case "list":
-                displayList(newExpenseArray);
-                System.out.println("Listing Expenses:");
+                displayList(expensesArray);
+                break;
             case "summary":
                 System.out.println("Total expenses: ");
+                break;
             case "delete":
                 System.out.println("Expense deleted successfully");
+                break;
+
         }
     }
 
-    private static JsonArray addExpense(JsonArray expensesArray, int id, String[] args) {
+    private static void addExpense(JsonArray expensesArray, int id, String[] args) {
         if(Objects.equals(args[1], "--description") & Objects.equals(args[3], "--amount")) {
             String taskDescription = args[2];
             double amount = Double.parseDouble(args[4]);
@@ -71,14 +74,15 @@ public class Main {
             System.out.println("Please check your arguments");
             System.out.println(Arrays.toString(args));
         }
-        return expensesArray;
     }
 
     private static void displayList(JsonArray expensesArray) {
-        if(expensesArray.isEmpty()) return;
-        System.out.println("ID       DATE           DESCRIPTION     AMOUNT");
+        System.out.println("ID       DATE            DESCRIPTION     AMOUNT");
         expensesArray.forEach(expense -> System.out.println(
-                expense.getAsJsonObject().get("id") + "   " + expense.getAsJsonObject().get("updatedAt") + expense.getAsJsonObject().get("description") + expense.getAsJsonObject().get("amount")));
+                expense.getAsJsonObject().get("id") + "        "
+                        + expense.getAsJsonObject().get("updatedAt") + "    "
+                        + expense.getAsJsonObject().get("description") + "         R "
+                        + expense.getAsJsonObject().get("amount")));
     }
 
     private static void saveExpenses(JsonArray expensesArray) {

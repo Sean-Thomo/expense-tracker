@@ -21,7 +21,6 @@ public class Main {
     private static final String FILE_NAME = "expenses.json";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final Gson GSON = new Gson();
-    static Calendar calendar = Calendar.getInstance();
 
     public static void main(String[] args) {
         if (args.length == 0) return;
@@ -46,7 +45,6 @@ public class Main {
         switch (action) {
             case "add":
                 addExpense(expensesArray, ++maxId, args);
-                saveExpenses(expensesArray);
                 break;
             case "list":
                 displayList(expensesArray);
@@ -56,7 +54,6 @@ public class Main {
                 break;
             case "delete":
                 deleteExpense(expensesArray, args[1], Integer.parseInt(args[2]));
-                saveExpenses(expensesArray);
                 break;
         }
     }
@@ -67,7 +64,7 @@ public class Main {
                 JsonObject expense = expensesArray.get(i).getAsJsonObject();
                 if (expense.get("id").getAsInt() == id) {
                     expensesArray.remove(i);
-                    System.out.println("Expense deleted successfully");
+                    saveExpenses(expensesArray);
                 }
             }
         } else {
@@ -117,6 +114,7 @@ public class Main {
             newExpense.addProperty("updatedAt", now.format(DATE_FORMAT));
             System.out.println("Task added successfully ID: " + newExpense.get("id"));
             expensesArray.add(newExpense);
+            saveExpenses(expensesArray);
         } else {
             System.out.println("Please check your arguments");
             System.out.println(Arrays.toString(args));

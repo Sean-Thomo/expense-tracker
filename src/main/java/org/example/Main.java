@@ -48,13 +48,18 @@ public class Main {
                 displayList(expensesArray);
                 break;
             case "summary":
-                System.out.println("Total expenses: ");
+                sumExpense(expensesArray);
                 break;
             case "delete":
                 System.out.println("Expense deleted successfully");
                 break;
-
         }
+    }
+
+    private static void sumExpense(JsonArray expensesArray) {
+        final double[] total = {0};
+        expensesArray.forEach(expense -> total[0] += Double.parseDouble(String.valueOf(expense.getAsJsonObject().get("amount"))));
+        System.out.println("Total expenses: R " + total[0]);
     }
 
     private static void addExpense(JsonArray expensesArray, int id, String[] args) {

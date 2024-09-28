@@ -8,22 +8,26 @@ import com.google.gson.JsonParser;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Main {
     private static final String FILE_NAME = "expenses.json";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final Gson GSON = new Gson();
+    static Calendar calendar = Calendar.getInstance();
 
     public static void main(String[] args) {
         if (args.length == 0) return;
 
         String action = args[0];
         JsonArray expensesArray = new JsonArray();
-        JsonArray newExpenseArray = new JsonArray();
         int maxId = 0;
 
         try (FileReader reader = new FileReader(FILE_NAME)) {
@@ -48,7 +52,7 @@ public class Main {
                 displayList(expensesArray);
                 break;
             case "summary":
-                sumExpense(expensesArray);
+                sumExpense(expensesArray, args.length == 2 ? args[2] == null ? 0 : Integer.parseInt(args[2]) : null);
                 break;
             case "delete":
                 System.out.println("Expense deleted successfully");
@@ -56,10 +60,32 @@ public class Main {
         }
     }
 
-    private static void sumExpense(JsonArray expensesArray) {
+    private static void sumExpense(JsonArray expensesArray, Integer month) {
         final double[] total = {0};
-        expensesArray.forEach(expense -> total[0] += Double.parseDouble(String.valueOf(expense.getAsJsonObject().get("amount"))));
-        System.out.println("Total expenses: R " + total[0]);
+
+        if (month == null) {
+            expensesArray.forEach(expense ->
+                    total[0] += Double.parseDouble(String.valueOf(expense.getAsJsonObject().get("amount")))
+            );
+            System.out.println("Total expenses: R " + total[0]);
+        } else {
+            expensesArray.forEach(expense -> {
+                JsonObject expenseObj = expense.getAsJsonObject();
+                String createdAt = expenseObj.get("createdAt").getAsString();
+
+                LocalDate date = LocalDate.parse(createdAt, DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.ENGLISH));
+
+                if (date.getMonthValue() == month) {
+                    total[0] += Double.parseDouble(String.valueOf(expenseObj.get("amount")));
+                }
+            });
+
+            if (total[0] > 0) {
+                System.out.println("Total expenses for " + Month.of(month) + ": R " + total[0]);
+            } else {
+                System.out.println("No expenses found for " + Month.of(month));
+            }
+        }
     }
 
     private static void addExpense(JsonArray expensesArray, int id, String[] args) {

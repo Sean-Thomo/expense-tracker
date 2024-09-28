@@ -70,7 +70,7 @@ public class Main {
                 }
             }
         } else {
-            System.out.println("Please check your arguments");
+            System.out.println("Please check your arguments.");
         }
 
         if (!expenseFound) {
@@ -121,8 +121,7 @@ public class Main {
             expensesArray.add(newExpense);
             saveExpenses(expensesArray);
         } else {
-            System.out.println("Please check your arguments");
-            System.out.println(Arrays.toString(args));
+            System.out.println("Please check your arguments.");
         }
     }
 
@@ -136,11 +135,9 @@ public class Main {
     }
 
     private static void saveExpenses(JsonArray expensesArray) {
-        System.out.println("Updating Expenses... ");
         try (FileWriter file = new FileWriter(FILE_NAME)) {
             file.write(GSON.toJson(expensesArray));
             file.flush();
-            System.out.println("Expenses updated successfully.");
         } catch (IOException e) {
             System.out.println("Error saving expense: " + e.getMessage());
         }

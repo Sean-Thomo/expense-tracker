@@ -59,7 +59,7 @@ public class Main {
     }
 
     private static void filter(String arg) {
-
+        System.out.println("Filter");
     }
 
     private static void deleteExpense(JsonArray expensesArray, String arg, Integer id) {
@@ -112,10 +112,16 @@ public class Main {
 
     private static void addExpense(JsonArray expensesArray, int id, String[] args) {
         if(Objects.equals(args[1], "--description") & Objects.equals(args[3], "--amount")) {
+
             String taskDescription = args[2];
             double amount = Double.parseDouble(args[4]);
             LocalDateTime now = LocalDateTime.now();
             JsonObject newExpense = new JsonObject();
+
+            if (args.length == 6) {
+                String category = args[5];
+                newExpense.addProperty("category", category);
+            }
             newExpense.addProperty("id", id);
             newExpense.addProperty("description", taskDescription);
             newExpense.addProperty("amount", amount);

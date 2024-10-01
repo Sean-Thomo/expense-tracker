@@ -63,16 +63,19 @@ public class Main {
 
     private static void filter(JsonArray expensesArray, String category) {
         System.out.println("ID   Date            Description      Amount");
-
         expensesArray.forEach(expense -> {
-            JsonObject expenseObj = expense.getAsJsonObject();
-            String id = String.valueOf(expense.getAsJsonObject().get("id"));
-            String createdAt = String.valueOf(expense.getAsJsonObject().get("createdAt"));
+            String expenseCategory = String.valueOf(expense.getAsJsonObject().get("category"));
+            System.out.println(expenseCategory + " " + category);
+            if (expenseCategory.equals(category)) {
+                JsonObject expenseObj = expense.getAsJsonObject();
+                String id = String.valueOf(expense.getAsJsonObject().get("id"));
+                String createdAt = String.valueOf(expense.getAsJsonObject().get("createdAt"));
 //            LocalDate date = LocalDate.parse(createdAt, DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.ENGLISH));
-            String description = String.valueOf(expense.getAsJsonObject().get("description"));
-            Double amount = Double.valueOf(String.valueOf(expense.getAsJsonObject().get("amount")));
+                String description = String.valueOf(expense.getAsJsonObject().get("description"));
+                Double amount = Double.valueOf(String.valueOf(expense.getAsJsonObject().get("amount")));
 
-            System.out.println(id + "    " + createdAt + "    " + description + "          " + amount);
+                System.out.println(id + "    " + createdAt + "    " + description + "          " + amount);
+            }
         });
     }
 

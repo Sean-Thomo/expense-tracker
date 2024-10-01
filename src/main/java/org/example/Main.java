@@ -58,6 +58,10 @@ public class Main {
         }
     }
 
+    private static void filter(String arg) {
+
+    }
+
     private static void deleteExpense(JsonArray expensesArray, String arg, Integer id) {
         boolean expenseFound = false;
         if (Objects.equals(arg, "--id")) {

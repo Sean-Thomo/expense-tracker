@@ -55,11 +55,25 @@ public class Main {
             case "delete":
                 deleteExpense(expensesArray, args[1], Integer.parseInt(args[2]));
                 break;
+            case "filter":
+                filter(expensesArray, args[1]);
+                break;
         }
     }
 
-    private static void filter(String arg) {
-        System.out.println("Filter");
+    private static void filter(JsonArray expensesArray, String category) {
+        System.out.println("ID   Date            Description      Amount");
+
+        expensesArray.forEach(expense -> {
+            JsonObject expenseObj = expense.getAsJsonObject();
+            String id = String.valueOf(expense.getAsJsonObject().get("id"));
+            String createdAt = String.valueOf(expense.getAsJsonObject().get("createdAt"));
+//            LocalDate date = LocalDate.parse(createdAt, DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.ENGLISH));
+            String description = String.valueOf(expense.getAsJsonObject().get("description"));
+            Double amount = Double.valueOf(String.valueOf(expense.getAsJsonObject().get("amount")));
+
+            System.out.println(id + "    " + createdAt + "    " + description + "          " + amount);
+        });
     }
 
     private static void deleteExpense(JsonArray expensesArray, String arg, Integer id) {
